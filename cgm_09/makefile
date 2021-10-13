@@ -62,7 +62,7 @@ obj:
 	mkdir -p obj
 
 run: bin/engine
-	@bin/engine
+	bin/engine
 
 clean:
 	rm -rf obj

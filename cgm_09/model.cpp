@@ -34,11 +34,14 @@ Model::Model(std::string filename)
 void Model::render(Matrix projectionMatrix, Matrix viewMatrix, Vector3 sunLight, Vector3 cameraPosition)
 {
     Vector3 pos;
+    pos.x = position.x;
+    pos.y = position.y;
+    pos.z = position.z;
     if (this->fixed)
     {
-        pos.x = position.x + cameraPosition.x;
-        pos.y = position.y + cameraPosition.y;
-        pos.z = position.z + cameraPosition.z;
+        pos.x += cameraPosition.x;
+        pos.y += cameraPosition.y;
+        pos.z += cameraPosition.z;
     }
     shader->activate();
     shader->setMatrix("ProjectionMatrix", projectionMatrix);
