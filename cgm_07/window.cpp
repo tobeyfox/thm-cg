@@ -4,7 +4,7 @@
 
 void graphicsSetWindowSize(int, int);
 
-void gameSetKey(int, bool);
+void gameSetKey(int, int);;
 void gameSetMouse(double, double);
 
 static GLFWwindow* window;

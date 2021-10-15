@@ -11,9 +11,9 @@ static double cameraPitch = 0;
 double walkSpeed = 1.0;
 double mouseSpeed = 1.0;
 
-void gameSetKey(int key, bool state)
+void gameSetKey(int key, int state)
 {
-    gameKeyState[key] = state;
+    gameKeyState[key] = state > 0;
 }
 
 void gameSetMouse(double dx, double dy)
