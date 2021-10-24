@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/libraries/glfw-3.3.4.bin.WIN64/include",
+                "${workspaceFolder}/libraries/glad/include"
+            ],
+            "compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "windows-gcc-x64"
+        }, {
+            "name": "Mac",
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/libraries/glfw-3.3.4.bin.MACOS/include",
+                "${workspaceFolder}/libraries/glad/include"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++98",
+            "intelliSenseMode": "macos-clang-x64"
+        }
+    ],
+    "version": 4
+}

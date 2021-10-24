@@ -2,7 +2,7 @@
 
 struct Settings
 {
-    bool fullscreen = true;
+    bool fullscreen = false;
     int width = 1280;
     int height = 720;
     bool msaa = true;

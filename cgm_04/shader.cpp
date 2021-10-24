@@ -1,5 +1,7 @@
 #include "shader.h"
 #include <iostream>
+#include <cstring>
+#include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
 Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
