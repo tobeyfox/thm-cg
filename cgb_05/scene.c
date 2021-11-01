@@ -18,8 +18,8 @@ void loadScene(GLFWwindow* window)
     glClearColor(thmGray.r, thmGray.g, thmGray.b, thmGray.a);
 
     greenCube = createCubeMesh(thmGreen);
-    redSphere = createSphereMesh(thmRed);
     yellowCube = createCubeMesh(thmYellow);
+    redSphere = createSphereMesh(thmRed);
 }
 
 void renderScene()
@@ -29,8 +29,8 @@ void renderScene()
     loadCameraViewMatrix();
 
     renderMesh(yellowCube, matrixTranslate(-3,0,0));
-    renderMesh(redSphere, matrixTranslate(0,0,0));
     renderMesh(greenCube, matrixTranslate(3,0,0));
+    renderMesh(redSphere, matrixTranslate(0,0,0));
 }
 
 void unloadScene()

@@ -85,7 +85,7 @@ static void printFps()
 {
     static double previousTime = 0;
     static int frameCount = 0;
-    
+
     double currentTime = glfwGetTime();
     if (currentTime - previousTime >= 1.0)
     {

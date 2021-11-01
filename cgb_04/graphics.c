@@ -15,7 +15,7 @@ int startGraphics(int width, int height)
         return 1;
     }
     glfwWindowHint(GLFW_SAMPLES, 4);
-    
+
     window = glfwCreateWindow(width, height, "Engine", NULL, NULL);
     if (!window)
     {
@@ -70,7 +70,7 @@ static void printFps()
 {
     static double previousTime = 0;
     static int frameCount = 0;
-    
+
     double currentTime = glfwGetTime();
     if (currentTime - previousTime >= 1.0)
     {

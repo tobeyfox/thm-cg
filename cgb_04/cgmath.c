@@ -31,6 +31,16 @@ matrix matrixRotateY(float a)
     return m;
 }
 
+matrix matrixRotateZ(float a)
+{
+    matrix m = {};
+    m.m11 = cos(a);  m.m21 = -sin(a);  m.m31 = 0;  m.m41 = 0;
+    m.m12 = sin(a);  m.m22 =  cos(a);  m.m32 = 0;  m.m42 = 0;
+    m.m13 =      0;  m.m23 =       0;  m.m33 = 1;  m.m43 = 0;
+    m.m14 =      0;  m.m24 =       0;  m.m34 = 0;  m.m44 = 1;
+    return m;
+}
+
 float deg2rad(float deg)
 {
     return deg * 3.14f / 180.0f;

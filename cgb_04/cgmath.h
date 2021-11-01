@@ -23,5 +23,6 @@ typedef struct {
 matrix matrixTranslate(float x, float y, float z);
 matrix matrixRotateX(float a);
 matrix matrixRotateY(float a);
+matrix matrixRotateZ(float a);
 
 float deg2rad(float deg);
