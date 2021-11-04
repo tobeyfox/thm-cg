@@ -84,5 +84,5 @@ matrix matrixMultiply(matrix a, matrix b)
 
 float deg2rad(float deg)
 {
-    return deg * 3.14f / 180.0f;
+    return deg * M_PI / 180.0f;
 }
