@@ -30,10 +30,7 @@ Mesh::Mesh(std::string filename)
         }
         else if (type == "vt")
         {
-            Vector2 textureCoordinate = reader->getVector2();
-            //flip texture vertically
-            textureCoordinate.y = 1.0 - textureCoordinate.y;
-            vt.push_back(textureCoordinate);
+            vt.push_back(reader->getVector2());
         }
         else if (type == "vn")
         {
@@ -75,9 +72,9 @@ void Mesh::init(Vertex* vertices, int vc)
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Vector3));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(5* sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Vector3) + sizeof(Vector2)));
     glEnableVertexAttribArray(2);
 }
 

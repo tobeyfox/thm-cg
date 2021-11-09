@@ -56,13 +56,13 @@ bool graphicsStart(Settings props)
 
     Vertex vertices[] = {
         { -0.6f,  0.0f, 0.0f,    0.0f, 0.5f },
-        {  0.0f, -0.6f, 0.0f,    0.5f, 1.0f },
+        {  0.0f, -0.6f, 0.0f,    0.5f, 0.0f },
         {  0.6f,  0.0f, 0.0f,    1.0f, 0.5f },
         { -0.6f,  0.0f, 0.0f,    0.0f, 0.5f },
         {  0.6f,  0.0f, 0.0f,    1.0f, 0.5f },
-        {  0.0f,  0.6f, 0.0f,    0.5f, 0.0f },
+        {  0.0f,  0.6f, 0.0f,    0.5f, 1.0f },
     };
-    mesh = new Mesh(vertices, 6);
+    mesh = new Mesh(vertices, 3);
     
     shader = new Shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
     texture = new Texture("textures/thm2k.png");

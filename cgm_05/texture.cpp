@@ -16,6 +16,7 @@ Texture::Texture(const char *filename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int ww, hh, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load(filename, &ww, &hh, &nrChannels, 0);
     if (data)
     {
