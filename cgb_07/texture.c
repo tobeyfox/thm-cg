@@ -16,6 +16,7 @@ unsigned int loadTexture(const char *filename)
     glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
     int ww, hh, nrChannels;
+    stbi_set_flip_vertically_on_load(1);
     unsigned char *data = stbi_load(filename, &ww, &hh, &nrChannels, 0);
     if (data)
     {

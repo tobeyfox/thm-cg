@@ -86,10 +86,10 @@ static mesh createCubeMesh(color col)
 
     vector3 norm = { 0, 0, 1 };
 
-    vertices[0] = (vertex){ { -1, -1,  1 }, norm, col, { 0, 1 } };
-    vertices[1] = (vertex){ {  1, -1,  1 }, norm, col, { 1, 1 } };
-    vertices[2] = (vertex){ {  1,  1,  1 }, norm, col, { 1, 0 } };
-    vertices[3] = (vertex){ { -1,  1,  1 }, norm, col, { 0, 0 } };
+    vertices[0] = (vertex){ { -1, -1,  1 }, norm, col, { 0, 0 } };
+    vertices[1] = (vertex){ {  1, -1,  1 }, norm, col, { 1, 0 } };
+    vertices[2] = (vertex){ {  1,  1,  1 }, norm, col, { 1, 1 } };
+    vertices[3] = (vertex){ { -1,  1,  1 }, norm, col, { 0, 1 } };
     for (int i = 1; i < 6; i++)
     {
         matrix rotationMatrix;
@@ -97,10 +97,10 @@ static mesh createCubeMesh(color col)
         if (i == 4) rotationMatrix = matrixRotateX(deg2rad(90.0f));
         if (i == 5) rotationMatrix = matrixRotateX(deg2rad(-90.0f));
         vector3 normr = matrixVector3Multiply(rotationMatrix, norm);
-        vertices[i * 4 + 0] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[0].pos), normr, col, { 0, 1 } };
-        vertices[i * 4 + 1] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[1].pos), normr, col, { 1, 1 } };
-        vertices[i * 4 + 2] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[2].pos), normr, col, { 1, 0 } };
-        vertices[i * 4 + 3] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[3].pos), normr, col, { 0, 0 } };
+        vertices[i * 4 + 0] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[0].pos), normr, col, { 0, 0 } };
+        vertices[i * 4 + 1] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[1].pos), normr, col, { 1, 0 } };
+        vertices[i * 4 + 2] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[2].pos), normr, col, { 1, 1 } };
+        vertices[i * 4 + 3] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[3].pos), normr, col, { 0, 1 } };
     }
     return (mesh) {
         vcount: 24,
@@ -143,10 +143,11 @@ static mesh createSphereMesh(color col)
         {
             float tw = 1.0f / segments;
             float th = 1.0f / rings;
-            vertices[i++] = (vertex){ vectors[ x ][y+1], vectors[ x ][y+1], col, {   x   * tw, (y+1) * th } };
-            vertices[i++] = (vertex){ vectors[x+1][y+1], vectors[x+1][y+1], col, { (x+1) * tw, (y+1) * th } };
-            vertices[i++] = (vertex){ vectors[x+1][ y ], vectors[x+1][ y ], col, { (x+1) * tw, ( y ) * th } };
-            vertices[i++] = (vertex){ vectors[ x ][ y ], vectors[ x ][ y ], col, {   x   * tw,  (y ) * th } };
+            float ty = rings - y;
+            vertices[i++] = (vertex){ vectors[ x ][y+1], vectors[ x ][y+1], col, {   x   * tw, (ty-1) * th } };
+            vertices[i++] = (vertex){ vectors[x+1][y+1], vectors[x+1][y+1], col, { (x+1) * tw, (ty-1) * th } };
+            vertices[i++] = (vertex){ vectors[x+1][ y ], vectors[x+1][ y ], col, { (x+1) * tw, ( ty ) * th } };
+            vertices[i++] = (vertex){ vectors[ x ][ y ], vectors[ x ][ y ], col, {   x   * tw, ( ty ) * th } };
         }
     }
     for (int i = 0; i <= segments; i++)
