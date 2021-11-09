@@ -29,8 +29,8 @@ int startGraphics(int width, int height)
     glfwSwapInterval(1);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
     enableCameraMouseControl(window);
     glfwSetKeyCallback(window, keyCallback);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -87,7 +87,7 @@ static void printFps()
 {
     static double previousTime = 0;
     static int frameCount = 0;
-    
+
     double currentTime = glfwGetTime();
     if (currentTime - previousTime >= 1.0)
     {

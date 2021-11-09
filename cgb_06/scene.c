@@ -20,8 +20,8 @@ void loadScene(GLFWwindow* window)
     glClearColor(thmGray.r, thmGray.g, thmGray.b, thmGray.a);
 
     greenCube = createCubeMesh(thmGreen);
-    redSphere = createSphereMesh(thmRed);
     yellowCube = createCubeMesh(thmYellow);
+    redSphere = createSphereMesh(thmRed);
 
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
@@ -35,11 +35,11 @@ void renderScene()
     loadCameraViewMatrix();
 
     vector4 lightPosition = {50000, 5000, 50000, 0};
-	glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
+    glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
     renderMesh(yellowCube, matrixTranslate(-3,0,0));
-    renderMesh(redSphere, matrixTranslate(0,0,0));
     renderMesh(greenCube, matrixTranslate(3,0,0));
+    renderMesh(redSphere, matrixTranslate(0,0,0));
 }
 
 void unloadScene()

@@ -54,8 +54,9 @@ bool graphicsStart(Settings props)
 
     glClearColor(0.2f,0.2f,0.2f,1.0f);
 
-    shader = new Shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
     mesh = new Mesh("meshes/thm.obj");
+    
+    shader = new Shader("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
     texture = new Texture("textures/thm_colors.jpg");
 
     return true;

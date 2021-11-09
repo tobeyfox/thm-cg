@@ -8,4 +8,3 @@ union Vertex {
     };
     float values[5];
 };
-
