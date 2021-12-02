@@ -1,9 +1,9 @@
 #include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include "scene.h"
 #include "camera.h"
 #include "texture.h"
+#include <math.h>
+#include <time.h>
 
 static const color thmGray = {0.29f, 0.36f, 0.4f, 1.0f};
 static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
@@ -12,11 +12,11 @@ static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
 static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
 static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
 
-static mesh cubeMap;
 static mesh earthMesh;
+static mesh cubeMap;
 
-static GLuint cubeMapTexture;
 static GLuint earthTexture;
+static GLuint cubeMapTexture;
 
 static float earthRotation = 0;
 static float earthEcliptic = 0;
@@ -27,11 +27,11 @@ void loadScene(GLFWwindow* window)
 
     glClearColor(0, 0, 0, 0);
 
-    cubeMap = createCubeMap(thmGreen);
     earthMesh = createSphereMesh(thmRed);
+    cubeMap = createCubeMap(thmGreen);
 
-    cubeMapTexture = loadTexture("res/star_cube.jpg");
     earthTexture = loadTexture("res/earth8k.jpg");
+    cubeMapTexture = loadTexture("res/star_cube.jpg");
 
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
@@ -47,11 +47,11 @@ void renderScene()
     loadCameraViewMatrixForBackground();
     renderCubeMap(cubeMap, cubeMapTexture);
     glClear(GL_DEPTH_BUFFER_BIT);
-    
+
     loadCameraViewMatrix();
 
     vector4 lightPosition = {0, 0, 50000, 0};
-	glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
+    glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
     matrix transform = matrixMultiply(matrixRotateX(earthEcliptic), matrixRotateY(earthRotation));
     renderMesh(earthMesh, transform, earthTexture);
@@ -59,8 +59,8 @@ void renderScene()
 
 void unloadScene()
 {
-    free(cubeMap.vertices);
     free(earthMesh.vertices);
+    free(cubeMap.vertices);
 }
 
 void setViewportSize(GLFWwindow* window)

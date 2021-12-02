@@ -13,11 +13,10 @@ static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
 static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
 
 static mesh earthMesh;
+static mesh satelliteMesh;
 
 static GLuint earthTexture;
-
-static float earthRotation = 0;
-static float earthEcliptic = 0;
+static GLuint satelliteTexture;
 
 void loadScene(GLFWwindow* window)
 {
@@ -25,19 +24,20 @@ void loadScene(GLFWwindow* window)
 
     glClearColor(0, 0, 0, 0);
 
+    satelliteMesh = createCubeMesh(thmYellow);
     earthMesh = createSphereMesh(thmRed);
 
     earthTexture = loadTexture("res/earth8k.jpg");
+    satelliteTexture = loadTexture("res/thm2k.png");
 
-    glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, &sunLight);
 }
 
 void renderScene()
 {
-    calculateEarthRotation();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     loadCameraViewMatrix();
@@ -45,13 +45,19 @@ void renderScene()
     vector4 lightPosition = {0, 0, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
-    matrix transform = matrixMultiply(matrixRotateX(earthEcliptic), matrixRotateY(earthRotation));
-    renderMesh(earthMesh, transform, earthTexture);
+    glDisable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    renderMesh(earthMesh, calculateEarthRotation(), earthTexture);
+
+    glDisable(GL_LIGHT1);
+    glEnable(GL_LIGHT0);
+    renderMesh(satelliteMesh, calculateSatellitePosition(), satelliteTexture);
 }
 
 void unloadScene()
 {
     free(earthMesh.vertices);
+    free(satelliteMesh.vertices);
 }
 
 void setViewportSize(GLFWwindow* window)
@@ -161,14 +167,34 @@ static mesh createSphereMesh(color col)
     };
 }
 
-static void calculateEarthRotation()
+static matrix calculateEarthRotation()
 {
     int timeOfDay = time(0) % 86400;
-    earthRotation = deg2rad(timeOfDay / 86400.0f * 360.0f);
+    float earthRotation = deg2rad(timeOfDay / 86400.0f * 360.0f);
     //printf("time of day = %f\n", timeOfDay / 86400.0f);
 
     int timeOfYear = (time(0) + 864000) % 31557600; //compensate 10 days in december. 1 year = 86400 * 365.25 seconds
     //printf("time of year = %f\n", timeOfYear / 31557600.0f);
-    earthEcliptic = cosf(timeOfYear / 31557600.0f * M_PI * 2.0f) * deg2rad(-23.4f);
+    float earthEcliptic = cosf(timeOfYear / 31557600.0f * M_PI * 2.0f) * deg2rad(-23.4f);
     //printf("cos = %f\n", earthEcliptic);
+    return matrixMultiply(matrixRotateX(earthEcliptic), matrixRotateY(earthRotation));
+}
+
+static matrix calculateSatellitePosition()
+{
+    float scale = 25.0 / 6370.0;
+
+    int orbitTime = 5400;
+    float orbitRadius = 6770.0 / 6370.0;
+    int orbitProgress = time(0) % orbitTime;
+
+    matrix orbit = matrixRotateY(deg2rad(orbitProgress / (float)orbitTime * 360.0f));
+
+    matrix translation = matrixMultiply(matrixTranslate(orbitRadius, 0, 0), matrixScale(scale));
+
+    static float tu = 0.1f;
+    tu += 0.1f;
+    matrix tumbling = matrixMultiply(matrixRotateY(deg2rad(tu)), matrixRotateZ(deg2rad(tu)));
+
+    return matrixMultiply(orbit, matrixMultiply(translation, tumbling));
 }

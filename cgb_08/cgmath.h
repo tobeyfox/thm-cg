@@ -55,6 +55,7 @@ matrix matrixTranslate(float x, float y, float z);
 matrix matrixRotateX(float a);
 matrix matrixRotateY(float a);
 matrix matrixRotateZ(float a);
+matrix matrixScale(float a);
 
 vector3 matrixVector3Multiply(matrix m, vector3 v);
 matrix matrixMultiply(matrix a, matrix b);

@@ -41,16 +41,6 @@ matrix matrixRotateZ(float a)
     return m;
 }
 
-matrix matrixScale(float a)
-{
-    matrix m = {};
-    m.m11 = a;  m.m21 = 0;  m.m31 = 0;  m.m41 = 0;
-    m.m12 = 0;  m.m22 = a;  m.m32 = 0;  m.m42 = 0;
-    m.m13 = 0;  m.m23 = 0;  m.m33 = a;  m.m43 = 0;
-    m.m14 = 0;  m.m24 = 0;  m.m34 = 0;  m.m44 = 1;
-    return m;
-}
-
 vector3 matrixVector3Multiply(matrix m, vector3 v)
 {
     vector3 result = {

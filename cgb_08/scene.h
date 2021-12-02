@@ -11,4 +11,5 @@ static void renderMesh(mesh m, matrix transform, GLuint texture);
 static mesh createCubeMesh(color col);
 static mesh createSphereMesh(color col);
 
-static void calculateEarthRotation();
+static matrix calculateEarthRotation();
+static matrix calculateSatellitePosition();
