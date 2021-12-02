@@ -38,7 +38,7 @@ void loadScene(GLFWwindow* window)
 void renderScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     loadCameraViewMatrix();
 
     vector4 lightPosition = {50000, 5000, 50000, 0};

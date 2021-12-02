@@ -9,4 +9,3 @@ union Vertex {
     };
     float values[8];
 };
-
