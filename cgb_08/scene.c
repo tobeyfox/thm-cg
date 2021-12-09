@@ -10,7 +10,8 @@ static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
 static const color thmYellow = {0.96f, 0.67f, 0.0f, 1.0f};
 static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
 static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
-static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
+static const color ambientLight = {0.1f, 0.1f, 0.1f, 1.0f};
+static const color noLight = {0.0f, 0.0f, 0.0f, 1.0f};
 
 static mesh earthMesh;
 static mesh satelliteMesh;
@@ -30,10 +31,14 @@ void loadScene(GLFWwindow* window)
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");
 
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &sunLight);
+
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, &sunLight);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, &noLight);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, &sunLight);
 }
 
 void renderScene()
@@ -45,12 +50,12 @@ void renderScene()
     vector4 lightPosition = {0, 0, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
-    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHT2);
     glEnable(GL_LIGHT1);
     renderMesh(earthMesh, calculateEarthRotation(), earthTexture);
 
     glDisable(GL_LIGHT1);
-    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT2);
     renderMesh(satelliteMesh, calculateSatellitePosition(), satelliteTexture);
 }
 
