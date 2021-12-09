@@ -24,8 +24,8 @@ void loadScene(GLFWwindow* window)
 
     glClearColor(0, 0, 0, 0);
 
-    satelliteMesh = createCubeMesh(thmYellow);
     earthMesh = createSphereMesh(thmRed);
+    satelliteMesh = createCubeMesh(thmYellow);
 
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");

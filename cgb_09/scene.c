@@ -13,13 +13,12 @@ static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
 static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
 
 static mesh earthMesh;
+static mesh satelliteMesh;
 static mesh cubeMap;
 
 static GLuint earthTexture;
+static GLuint satelliteTexture;
 static GLuint cubeMapTexture;
-
-static float earthRotation = 0;
-static float earthEcliptic = 0;
 
 void loadScene(GLFWwindow* window)
 {
@@ -28,20 +27,21 @@ void loadScene(GLFWwindow* window)
     glClearColor(0, 0, 0, 0);
 
     earthMesh = createSphereMesh(thmRed);
+    satelliteMesh = createCubeMesh(thmYellow);
     cubeMap = createCubeMap(thmGreen);
 
     earthTexture = loadTexture("res/earth8k.jpg");
-    cubeMapTexture = loadTexture("res/star_cube.jpg");
+    satelliteTexture = loadTexture("res/thm2k.png");
+    cubeMapTexture = loadTexture("res/cubemap.jpg");
 
-    glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, &sunLight);
 }
 
 void renderScene()
 {
-    calculateEarthRotation();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     loadCameraViewMatrixForBackground();
@@ -53,13 +53,19 @@ void renderScene()
     vector4 lightPosition = {0, 0, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
-    matrix transform = matrixMultiply(matrixRotateX(earthEcliptic), matrixRotateY(earthRotation));
-    renderMesh(earthMesh, transform, earthTexture);
+    glDisable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    renderMesh(earthMesh, calculateEarthRotation(), earthTexture);
+
+    glDisable(GL_LIGHT1);
+    glEnable(GL_LIGHT0);
+    renderMesh(satelliteMesh, calculateSatellitePosition(), satelliteTexture);
 }
 
 void unloadScene()
 {
     free(earthMesh.vertices);
+    free(satelliteMesh.vertices);
     free(cubeMap.vertices);
 }
 
@@ -189,60 +195,80 @@ static mesh createSphereMesh(color col)
     };
 }
 
-static void calculateEarthRotation()
-{
-    int timeOfDay = time(0) % 86400;
-    earthRotation = deg2rad(timeOfDay / 86400.0f * 360.0f);
-    //printf("time of day = %f\n", timeOfDay / 86400.0f);
-
-    int timeOfYear = (time(0) + 864000) % 31557600; //compensate 10 days in december. 1 year = 86400 * 365.25 seconds
-    //printf("time of year = %f\n", timeOfYear / 31557600.0f);
-    earthEcliptic = cosf(timeOfYear / 31557600.0f * M_PI * 2.0f) * deg2rad(-23.4f);
-    //printf("cos = %f\n", earthEcliptic);
-}
-
 static mesh createCubeMap(color col)
 {
     vertex* vertices = (vertex *)calloc(24, sizeof(vertex));
 
-    //+z
-    vertices[0] = (vertex){ { -1,  1,  1 }, {0,0,-1}, col, { 2/4.0f, 1/3.0f } };
-    vertices[1] = (vertex){ {  1,  1,  1 }, {0,0,-1}, col, { 1/4.0f, 1/3.0f } };
-    vertices[2] = (vertex){ {  1, -1,  1 }, {0,0,-1}, col, { 1/4.0f, 2/3.0f } };
-    vertices[3] = (vertex){ { -1, -1,  1 }, {0,0,-1}, col, { 2/4.0f, 2/3.0f } };
+    // +y
+    vertices[ 0] = (vertex){ {  1,  1, -1 }, {  0, -1,  0 }, col, { 2/3.f, 1/2.f } };
+    vertices[ 1] = (vertex){ {  1,  1,  1 }, {  0, -1,  0 }, col, { 2/3.f, 2/2.f } };
+    vertices[ 2] = (vertex){ { -1,  1,  1 }, {  0, -1,  0 }, col, { 1/3.f, 2/2.f } };
+    vertices[ 3] = (vertex){ { -1,  1, -1 }, {  0, -1,  0 }, col, { 1/3.f, 1/2.f } };
 
-    //-z
-    vertices[4] = (vertex){ { -1, -1, -1 }, {0,0,1}, col, { 3/4.0f, 2/3.0f } };
-    vertices[5] = (vertex){ {  1, -1, -1 }, {0,0,1}, col, { 4/4.0f, 2/3.0f } };
-    vertices[6] = (vertex){ {  1,  1, -1 }, {0,0,1}, col, { 4/4.0f, 1/3.0f } };
-    vertices[7] = (vertex){ { -1,  1, -1 }, {0,0,1}, col, { 3/4.0f, 1/3.0f } };
+    // +z
+    vertices[ 4] = (vertex){ {  1, -1,  1 }, {  0,  0, -1 }, col, { 2/3.f, 1/2.f } };
+    vertices[ 5] = (vertex){ { -1, -1,  1 }, {  0,  0, -1 }, col, { 3/3.f, 1/2.f } };
+    vertices[ 6] = (vertex){ { -1,  1,  1 }, {  0,  0, -1 }, col, { 3/3.f, 2/2.f } };
+    vertices[ 7] = (vertex){ {  1,  1,  1 }, {  0,  0, -1 }, col, { 2/3.f, 2/2.f } };
 
-    //+x
-    vertices[8] =  (vertex){ {  1, -1, -1 }, {-1,0,0}, col, { 0/4.0f, 2/3.0f } };
-    vertices[9] =  (vertex){ {  1, -1,  1 }, {-1,0,0}, col, { 1/4.0f, 2/3.0f } };
-    vertices[10] = (vertex){ {  1,  1,  1 }, {-1,0,0}, col, { 1/4.0f, 1/3.0f } };
-    vertices[11] = (vertex){ {  1,  1,  -1 }, {-1,0,0}, col, { 0/4.0f, 1/3.0f } };
+    // -x
+    vertices[ 8] = (vertex){ { -1, -1,  1 }, {  1,  0,  0 }, col, { 0/3.f, 0/2.f } };
+    vertices[ 9] = (vertex){ { -1, -1, -1 }, {  1,  0,  0 }, col, { 1/3.f, 0/2.f } };
+    vertices[10] = (vertex){ { -1,  1, -1 }, {  1,  0,  0 }, col, { 1/3.f, 1/2.f } };
+    vertices[11] = (vertex){ { -1,  1,  1 }, {  1,  0,  0 }, col, { 0/3.f, 1/2.f } };
 
-    //-x
-    vertices[12] = (vertex){ {  -1,  1,  -1 }, {1,0,0}, col, { 3/4.0f, 1/3.0f } };
-    vertices[13] = (vertex){ {  -1,  1,  1 }, {1,0,0}, col, { 2/4.0f, 1/3.0f } };
-    vertices[14] = (vertex){ {  -1, -1,  1 }, {1,0,0}, col, { 2/4.0f, 2/3.0f } };
-    vertices[15] = (vertex){ {  -1, -1, -1 }, {1,0,0}, col, { 3/4.0f, 2/3.0f } };
+    // -y
+    vertices[12] = (vertex){ { -1, -1, -1 }, {  0,  1,  0 }, col, { 1/3.f, 1/2.f } };
+    vertices[13] = (vertex){ { -1, -1,  1 }, {  0,  1,  0 }, col, { 1/3.f, 0/2.f } };
+    vertices[14] = (vertex){ {  1, -1,  1 }, {  0,  1,  0 }, col, { 2/3.f, 0/2.f } };
+    vertices[15] = (vertex){ {  1, -1, -1 }, {  0,  1,  0 }, col, { 2/3.f, 1/2.f } };
 
-    //+y
-    vertices[16] = (vertex){ {  1,  1,  1 }, {0,-1,0}, col, { 1/4.0f, 1/3.0f } };
-    vertices[17] = (vertex){ { -1,  1,  1 }, {0,-1,0}, col, { 2/4.0f, 1/3.0f } };
-    vertices[18] = (vertex){ { -1,  1, -1 }, {0,-1,0}, col, { 2/4.0f, 0/3.0f } };
-    vertices[19] = (vertex){ {  1,  1, -1 }, {0,-1,0}, col, { 1/4.0f, 0/3.0f } };
+    // +x
+    vertices[16] = (vertex){ {  1, -1, -1 }, { -1,  0,  0 }, col, { 0/3.f, 1/2.f } };
+    vertices[17] = (vertex){ {  1, -1,  1 }, { -1,  0,  0 }, col, { 1/3.f, 1/2.f } };
+    vertices[18] = (vertex){ {  1,  1,  1 }, { -1,  0,  0 }, col, { 1/3.f, 2/2.f } };
+    vertices[19] = (vertex){ {  1,  1, -1 }, { -1,  0,  0 }, col, { 0/3.f, 2/2.f } };
 
-    //-y
-    vertices[20] = (vertex){ {  1, -1, -1 }, {0,1,0}, col, { 1/4.0f, 3/3.0f } };
-    vertices[21] = (vertex){ { -1, -1, -1 }, {0,1,0}, col, { 2/4.0f, 3/3.0f } };
-    vertices[22] = (vertex){ { -1, -1,  1 }, {0,1,0}, col, { 2/4.0f, 2/3.0f } };
-    vertices[23] = (vertex){ {  1, -1,  1 }, {0,1,0}, col, { 1/4.0f, 2/3.0f } };
+    // -z
+    vertices[20] = (vertex){ { -1, -1, -1 }, { 0,  0,  1 }, col, { 2/3.f, 0/2.f } };
+    vertices[21] = (vertex){ {  1, -1, -1 }, { 0,  0,  1 }, col, { 3/3.f, 0/2.f } };
+    vertices[22] = (vertex){ {  1,  1, -1 }, { 0,  0,  1 }, col, { 3/3.f, 1/2.f } };
+    vertices[23] = (vertex){ { -1,  1, -1 }, { 0,  0,  1 }, col, { 2/3.f, 1/2.f } };
 
     return (mesh){
         vcount: 24,
         vertices: vertices
     };
+}
+
+static matrix calculateEarthRotation()
+{
+    int timeOfDay = time(0) % 86400;
+    float earthRotation = deg2rad(timeOfDay / 86400.0f * 360.0f);
+    //printf("time of day = %f\n", timeOfDay / 86400.0f);
+
+    int timeOfYear = (time(0) + 864000) % 31557600; //compensate 10 days in december. 1 year = 86400 * 365.25 seconds
+    //printf("time of year = %f\n", timeOfYear / 31557600.0f);
+    float earthEcliptic = cosf(timeOfYear / 31557600.0f * M_PI * 2.0f) * deg2rad(-23.4f);
+    //printf("cos = %f\n", earthEcliptic);
+    return matrixMultiply(matrixRotateX(earthEcliptic), matrixRotateY(earthRotation));
+}
+
+static matrix calculateSatellitePosition()
+{
+    float scale = 25.0 / 6370.0;
+
+    int orbitTime = 5400;
+    float orbitRadius = 6770.0 / 6370.0;
+    int orbitProgress = time(0) % orbitTime;
+
+    matrix orbit = matrixRotateY(deg2rad(orbitProgress / (float)orbitTime * 360.0f));
+
+    matrix translation = matrixMultiply(matrixTranslate(orbitRadius, 0, 0), matrixScale(scale));
+
+    static float tu = 0.1f;
+    tu += 0.1f;
+    matrix tumbling = matrixMultiply(matrixRotateY(deg2rad(tu)), matrixRotateZ(deg2rad(tu)));
+
+    return matrixMultiply(orbit, matrixMultiply(translation, tumbling));
 }
