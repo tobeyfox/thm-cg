@@ -6,11 +6,11 @@
 #include <time.h>
 
 static const color thmGray = {0.29f, 0.36f, 0.4f, 1.0f};
-static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
-static const color thmYellow = {0.96f, 0.67f, 0.0f, 1.0f};
-static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
-static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
-static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
+static const color white = {1.0f, 1.0f, 1.0f, 1.0f};
+
+static const color sunLight = {0.9f, 0.9f, 0.9f, 1.0f};
+static const color ambientLight = {0.1f, 0.1f, 0.1f, 1.0f};
+static const color noLight = {0.0f, 0.0f, 0.0f, 1.0f};
 
 static mesh earthMesh;
 static mesh satelliteMesh;
@@ -26,9 +26,9 @@ void loadScene(GLFWwindow* window)
 
     glClearColor(0, 0, 0, 0);
 
-    earthMesh = createSphereMesh(thmRed);
-    satelliteMesh = createCubeMesh(thmYellow);
-    cubeMap = createCubeMap(thmGreen);
+    earthMesh = createSphereMesh(white);
+    satelliteMesh = createCubeMesh(white);
+    cubeMap = createCubeMap(white);
 
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");
@@ -37,28 +37,33 @@ void loadScene(GLFWwindow* window)
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, &sunLight);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, &noLight);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, &sunLight);
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
 }
 
 void renderScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    loadCameraViewMatrixForBackground();
-    renderCubeMap(cubeMap, cubeMapTexture);
+    loadCameraViewMatrix(0);
+    glDisable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    renderMesh(cubeMap, matrixScale(1), cubeMapTexture);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    loadCameraViewMatrix();
+    loadCameraViewMatrix(1);
 
     vector4 lightPosition = {0, 0, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
-    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHT2);
     glEnable(GL_LIGHT1);
     renderMesh(earthMesh, calculateEarthRotation(), earthTexture);
 
     glDisable(GL_LIGHT1);
-    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT2);
     renderMesh(satelliteMesh, calculateSatellitePosition(), satelliteTexture);
 }
 
@@ -87,31 +92,13 @@ static void renderMesh(mesh m, matrix transform, GLuint texture)
     for (int i = 0; i < m.vcount; i++)
     {
         glNormal3fv(&(m.vertices[i].norm));
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
         glTexCoord2fv(&(m.vertices[i].texcoord));
         glVertex3fv(&(m.vertices[i].pos));
     }
     glEnd();
     glPopMatrix();
     glDisable(GL_TEXTURE_2D);
-}
-
-static void renderCubeMap(mesh m, GLuint texture)
-{
-    glDisable(GL_LIGHT1);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glEnable(GL_TEXTURE_2D);
-    glMaterialfv(GL_FRONT, GL_EMISSION, &(color){1,1,1,1});
-    glBegin(GL_QUADS);
-    for (int i = 0; i < m.vcount; i++)
-    {
-        glNormal3fv(&(m.vertices[i].norm));
-        glTexCoord2fv(&(m.vertices[i].texcoord));
-        glVertex3fv(&(m.vertices[i].pos));
-    }
-    glEnd();
-    glMaterialfv(GL_FRONT, GL_EMISSION, &(color){0,0,0,0});
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHT1);
 }
 
 static mesh createCubeMesh(color col)

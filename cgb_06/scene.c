@@ -6,8 +6,10 @@ static const color thmGray = {0.29f, 0.36f, 0.4f, 1.0f};
 static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
 static const color thmYellow = {0.96f, 0.67f, 0.0f, 1.0f};
 static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
-static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
-static const color ambientLight = {0.01f, 0.01f, 0.01f, 1.0f};
+
+static const color sunLight = {0.9f, 0.9f, 0.9f, 1.0f};
+static const color ambientLight = {0.1f, 0.1f, 0.1f, 1.0f};
+static const color noLight = {0.0f, 0.0f, 0.0f, 1.0f};
 
 static mesh greenCube;
 static mesh yellowCube;
@@ -26,12 +28,14 @@ void loadScene(GLFWwindow* window)
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
 }
 
 void renderScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     loadCameraViewMatrix();
 
     vector4 lightPosition = {50000, 5000, 50000, 0};

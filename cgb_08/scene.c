@@ -6,10 +6,9 @@
 #include <time.h>
 
 static const color thmGray = {0.29f, 0.36f, 0.4f, 1.0f};
-static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
-static const color thmYellow = {0.96f, 0.67f, 0.0f, 1.0f};
-static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
-static const color sunLight = {1.0f, 1.0f, 1.0f, 1.0f};
+static const color white = {1.0f, 1.0f, 1.0f, 1.0f};
+
+static const color sunLight = {0.9f, 0.9f, 0.9f, 1.0f};
 static const color ambientLight = {0.1f, 0.1f, 0.1f, 1.0f};
 static const color noLight = {0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -25,20 +24,19 @@ void loadScene(GLFWwindow* window)
 
     glClearColor(0, 0, 0, 0);
 
-    earthMesh = createSphereMesh(thmRed);
-    satelliteMesh = createCubeMesh(thmYellow);
+    earthMesh = createSphereMesh(white);
+    satelliteMesh = createCubeMesh(white);
 
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");
-
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &sunLight);
 
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
 
     glLightfv(GL_LIGHT2, GL_DIFFUSE, &noLight);
     glLightfv(GL_LIGHT2, GL_AMBIENT, &sunLight);
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
 }
 
 void renderScene()
@@ -83,6 +81,7 @@ static void renderMesh(mesh m, matrix transform, GLuint texture)
     for (int i = 0; i < m.vcount; i++)
     {
         glNormal3fv(&(m.vertices[i].norm));
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
         glTexCoord2fv(&(m.vertices[i].texcoord));
         glVertex3fv(&(m.vertices[i].pos));
     }

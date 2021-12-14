@@ -39,24 +39,16 @@ void loadCameraProjectionMatrix(float aspect)
     
 }
 
-void loadCameraViewMatrixForBackground()
+void loadCameraViewMatrix(int layer)
 {
     glMatrixMode(GL_MODELVIEW);
 
     glLoadIdentity();
-    matrix pitchRotationMatrix = matrixRotateX(deg2rad(-cameraPitch));
-    glMultMatrixf(&pitchRotationMatrix);
-    matrix yawRotationMatrix = matrixRotateY(deg2rad(-cameraYaw));
-    glMultMatrixf(&yawRotationMatrix);
-}
-
-void loadCameraViewMatrix()
-{
-    glMatrixMode(GL_MODELVIEW);
-
-    glLoadIdentity();
-    matrix translationMatrix = matrixTranslate(0.0f, 0.0f, -cameraDistance);
-    glMultMatrixf(&translationMatrix);
+    if (layer > 0)
+    {
+        matrix translationMatrix = matrixTranslate(0.0f, 0.0f, -cameraDistance);
+        glMultMatrixf(&translationMatrix);
+    }
     matrix pitchRotationMatrix = matrixRotateX(deg2rad(-cameraPitch));
     glMultMatrixf(&pitchRotationMatrix);
     matrix yawRotationMatrix = matrixRotateY(deg2rad(-cameraYaw));

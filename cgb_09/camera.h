@@ -1,8 +1,7 @@
 #include <GLFW/glfw3.h>
 
 void loadCameraProjectionMatrix(float ratio);
-void loadCameraViewMatrix();
-void loadCameraViewMatrixForBackground();
+void loadCameraViewMatrix(int layer);
 void enableCameraMouseControl(GLFWwindow* window);
 
 static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);

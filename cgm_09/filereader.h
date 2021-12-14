@@ -1,7 +1,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <vector>
 #include "cgmath.h"
 
 struct FileReader
