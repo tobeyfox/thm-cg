@@ -20,8 +20,8 @@ void main()
 
     float lightIntensity = max(dot(normal, -SunLightObjSpc), 0.0);
 
-    vec3 ambient = 0.1 * albedo;
-    vec3 diffuse = lightIntensity * lightColor * albedo;
+    vec3 ambient = 0.1 * lightColor * albedo;
+    vec3 diffuse = 0.9 * lightIntensity * lightColor * albedo;
 
     vec3 viewDir = normalize(VertPos - CameraPosObjSpc);
     vec3 reflectDir = reflect(-SunLightObjSpc, normal);
