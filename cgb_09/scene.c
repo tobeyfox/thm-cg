@@ -32,7 +32,7 @@ void loadScene(GLFWwindow* window)
 
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");
-    cubeMapTexture = loadTexture("res/cubemap2k.jpg");
+    cubeMapTexture = loadTexture("res/cubemap8k.jpg");
 
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);

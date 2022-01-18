@@ -13,8 +13,5 @@ void main()
 
     float lightIntensity = max(dot(NormVect, -SunLightObjSpc), 0.0);
 
-    float ambient = 0.1 * albedo;
-    float diffuse = 0.9 * lightIntensity * albedo;
-
-    FragColor = vec4(1.0, 1.0, 1.0, lightIntensity * albedo);
+    FragColor = vec4(lightIntensity, lightIntensity, lightIntensity, albedo);
 }
