@@ -4,7 +4,7 @@
         {
             "type": "shell",
             "label": "Make",
-            "command": "make -C ${fileDirname}",
+            "command": "make -C '${fileDirname}'",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -13,13 +13,13 @@
         {
             "type": "shell",
             "label": "Make Run",
-            "command": "make run -C ${fileDirname}",
+            "command": "make run -C '${fileDirname}'",
             "group": "none"
         },
         {
             "type": "shell",
             "label": "Make Clean",
-            "command": "make clean -C ${fileDirname}",
+            "command": "make clean -C '${fileDirname}'",
             "group": "none"
         }
     ]

@@ -7,11 +7,11 @@
             "request": "launch",
             "program": "${fileDirname}/bin/engine",
             "args": [],
-            "stopAtEntry": false,
+            //"stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",
+            // "environment": [],
+            // "externalConsole": false,
+            // "MIMode": "lldb",
             "preLaunchTask": "Make"
         }
     ]
