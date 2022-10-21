@@ -93,7 +93,7 @@ void graphicsTerminate()
 
 void graphicsSetWindowSize(int width, int height)
 {
-    std::cout << "Resolution: " << width << "x" << height << "\n";
+    std::cout << "Resolution: " << width << "x" << height << std::endl;
     viewportWidth = width;
     viewportHeight = height;
     resizeViewport = true;
