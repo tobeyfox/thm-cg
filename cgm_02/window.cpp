@@ -10,7 +10,7 @@ static bool isFullscreen = false;
 
 static void onError(int error, const char* description)
 {
-    std::cout << "Error: " << description << "\n";
+    std::cout << "Error: " << description << std::endl;
 }
 
 static void onKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -51,7 +51,7 @@ static void printFps()
     double currentTime = glfwGetTime();
     if (currentTime - previousTime >= 1.0)
     {
-        std::cout << "FPS: " << frameCount << "\n";
+        std::cout << "FPS: " << frameCount << std::endl;
 
         frameCount = 0;
         previousTime = currentTime;

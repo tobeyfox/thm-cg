@@ -26,7 +26,7 @@ static void setViewport()
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glFrustum(-w, w, -h, h, zNear, zFar);   
+        glFrustum(-w, w, -h, h, zNear, zFar);
     }
 }
 
@@ -69,7 +69,7 @@ void graphicsTerminate()
 
 void graphicsSetWindowSize(int width, int height)
 {
-    std::cout << "Resolution: " << width << "x" << height << "\n";
+    std::cout << "Resolution: " << width << "x" << height << std::endl;
     viewportWidth = width;
     viewportHeight = height;
     resizeViewport = true;
