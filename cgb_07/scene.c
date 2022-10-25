@@ -33,6 +33,7 @@ void loadScene(GLFWwindow* window)
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, &white);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
 }
@@ -43,7 +44,7 @@ void renderScene()
 
     loadCameraViewMatrix();
 
-    vector4 lightPosition = {50000, 5000, 50000, 0};
+    vector4 lightPosition = {50000, 20000, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
     renderMesh(yellowCube, matrixTranslate(-3,0,0), thmTexture);
@@ -77,6 +78,8 @@ static void renderMesh(mesh m, matrix transform, GLuint texture)
     {
         glNormal3fv(&(m.vertices[i].norm));
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m.vertices[i].color));
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0f);
         glTexCoord2fv(&(m.vertices[i].texcoord));
         glVertex3fv(&(m.vertices[i].pos));
     }

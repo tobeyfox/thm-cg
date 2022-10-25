@@ -36,6 +36,7 @@ void loadScene(GLFWwindow* window)
 
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, &white);
 
     glLightfv(GL_LIGHT2, GL_DIFFUSE, &noLight);
     glLightfv(GL_LIGHT2, GL_AMBIENT, &sunLight);
@@ -93,6 +94,8 @@ static void renderMesh(mesh m, matrix transform, GLuint texture)
     {
         glNormal3fv(&(m.vertices[i].norm));
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m.vertices[i].color));
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0f);
         glTexCoord2fv(&(m.vertices[i].texcoord));
         glVertex3fv(&(m.vertices[i].pos));
     }

@@ -6,6 +6,7 @@ static const color thmGray = {0.29f, 0.36f, 0.4f, 1.0f};
 static const color thmGreen = {0.5f, 0.73f, 0.14f, 1.0f};
 static const color thmYellow = {0.96f, 0.67f, 0.0f, 1.0f};
 static const color thmRed = {0.61f, 0.07f, 0.18f, 1.0f};
+static const color white = {1.0f, 1.0f, 1.0f, 1.0f};
 
 static const color sunLight = {0.9f, 0.9f, 0.9f, 1.0f};
 static const color ambientLight = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -28,6 +29,7 @@ void loadScene(GLFWwindow* window)
     glEnable(GL_LIGHT1);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
     glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, &white);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
 }
@@ -38,7 +40,7 @@ void renderScene()
 
     loadCameraViewMatrix();
 
-    vector4 lightPosition = {50000, 5000, 50000, 0};
+    vector4 lightPosition = {50000, 20000, 50000, 0};
     glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
 
     renderMesh(yellowCube, matrixTranslate(-3,0,0));
@@ -70,6 +72,8 @@ static void renderMesh(mesh m, matrix transform)
     {
         glNormal3fv(&(m.vertices[i].norm));
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m.vertices[i].color));
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0f);
         glVertex3fv(&(m.vertices[i].pos));
     }
     glEnd();
