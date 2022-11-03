@@ -41,19 +41,19 @@ void Shader::activate()
     glUseProgram(shaderProgram);
 }
 
-void Shader::setMatrix(const char* key, Matrix m)
+void Shader::setMatrix(std::string key, Matrix m)
 {
-    GLint location = glGetUniformLocation(shaderProgram, key);
+    GLint location = glGetUniformLocation(shaderProgram, key.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, m.values);
 }
 
-void Shader::setVector3(const char* key, Vector3 v)
+void Shader::setVector3(std::string key, Vector3 v)
 {
-    GLint location = glGetUniformLocation(shaderProgram, key);
+    GLint location = glGetUniformLocation(shaderProgram, key.c_str());
     glUniform3fv(location, 1, v.values);
 }
 
-bool Shader::shaderCompile(const char* filename, unsigned int* shader, unsigned int type)
+bool Shader::shaderCompile(std::string filename, unsigned int* shader, unsigned int type)
 {
     char * shaderSource = readFile(filename);
 
@@ -73,11 +73,11 @@ bool Shader::shaderCompile(const char* filename, unsigned int* shader, unsigned 
     return true;
 }
 
-char* Shader::readFile(const char* filename)
+char* Shader::readFile(std::string filename)
 {
     char * shaderSource = 0;
     long length;
-    FILE * f = fopen (filename, "rb");
+    FILE * f = fopen (filename.c_str(), "rb");
 
     if (f)
     {
