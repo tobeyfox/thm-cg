@@ -1,8 +1,6 @@
-// Hello World in C
-
 #include <stdio.h>
 
-int main()
+int main(void)
 {
     printf("Hello World!\n");
 

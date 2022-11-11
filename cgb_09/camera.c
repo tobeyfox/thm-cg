@@ -36,7 +36,6 @@ void loadCameraProjectionMatrix(float aspect)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-w, w, -h, h, zNear, zFar);
-    
 }
 
 void loadCameraViewMatrix(int layer)

@@ -14,7 +14,7 @@ int startGraphics(int width, int height)
         return 1;
     }
     glfwWindowHint(GLFW_SAMPLES, 4);
-    
+
     window = glfwCreateWindow(width, height, "Engine", NULL, NULL);
     if (!window)
     {
