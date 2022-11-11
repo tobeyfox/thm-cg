@@ -11,17 +11,17 @@ class Model
     public:
     Model(std::string filename);
     ~Model();
-    void setTransform(Vector3, Vector3);
+    void setTransform(Vector3, Vector3, float);
     void toggleFlag(std::string flag);
     void render(Matrix projectionMatrix, Matrix viewMatrix, Vector3 sunLight, Vector3 cameraPosition);
     bool skipDepthTesting();
 
-    
     private:
     bool nodepth = false;
     bool fixed = false;
     Vector3 position;
     Vector3 rotation;
+    float scale = 1;
     Shader* shader;
     Mesh* mesh;
     std::map<std::string, Texture*> textures;

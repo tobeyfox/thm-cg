@@ -21,7 +21,7 @@ Scene::Scene(std::string filename)
         }
         else if (type == "r")
         {
-            entities[entities.size() - 1]->setRotation(reader->getVector3());
+            entities[entities.size() - 1]->setRotation(deg2rad(reader->getVector3()));
         }
         else if (type == "f")
         {

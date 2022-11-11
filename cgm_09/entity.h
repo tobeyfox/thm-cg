@@ -21,5 +21,6 @@ class Entity
     std::string model;
     Vector3 position;
     Vector3 rotation;
+    float scale = 1;
     std::vector<std::string> flags;
 };

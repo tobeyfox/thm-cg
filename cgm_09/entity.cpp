@@ -1,7 +1,7 @@
 #include "entity.h"
 
 int graphicsLoadModel(std::string filename);
-void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation);
+void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation, float scale);
 void graphicsUpdateModel(int id, std::string flag);
 void graphicsUnloadModel(int id);
 
@@ -39,7 +39,7 @@ void Entity::load()
 
 void Entity::update(double time)
 {
-    graphicsUpdateModel(this->modelId, position, rotation);
+    graphicsUpdateModel(this->modelId, position, rotation, scale);
 }
 
 Entity::~Entity()

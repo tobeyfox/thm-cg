@@ -1,7 +1,6 @@
 #include "shader.h"
 #include <iostream>
-#include <cstring>
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
@@ -10,13 +9,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     char infoLog[512];
 
     unsigned int vertexShader, fragmentShader;
-    if (!shaderCompile(vertexShaderFile.c_str(), &vertexShader, GL_VERTEX_SHADER))
+    if (!shaderCompile(vertexShaderFile, &vertexShader, GL_VERTEX_SHADER))
     {
+        glDeleteShader(vertexShader);
         return;
     }
 
-    if (!shaderCompile(fragmentShaderFile.c_str(), &fragmentShader, GL_FRAGMENT_SHADER))
+    if (!shaderCompile(fragmentShaderFile, &fragmentShader, GL_FRAGMENT_SHADER))
     {
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
         return;
     }
 
@@ -29,9 +31,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "Failed to link shader program" << std::endl << infoLog << std::endl;
+        
+        glDeleteProgram(shaderProgram);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
         return;
     }
 
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
@@ -41,32 +50,31 @@ void Shader::activate()
     glUseProgram(shaderProgram);
 }
 
-void Shader::setMatrix(const char* key, Matrix m)
+void Shader::setMatrix(std::string key, Matrix m)
 {
-    GLint location = glGetUniformLocation(shaderProgram, key);
+    GLint location = glGetUniformLocation(shaderProgram, key.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, m.values);
 }
 
-void Shader::setVector3(const char* key, Vector3 v)
+void Shader::setVector3(std::string key, Vector3 v)
 {
-    GLint location = glGetUniformLocation(shaderProgram, key);
+    GLint location = glGetUniformLocation(shaderProgram, key.c_str());
     glUniform3fv(location, 1, v.values);
 }
 
-void Shader::setTexture(const char* key, Texture* texture)
+void Shader::setTexture(std::string key, Texture* texture)
 {
-    static const char* textureSlots[16] = { nullptr };
-    GLint location = glGetUniformLocation(shaderProgram, key);
+    GLint location = glGetUniformLocation(shaderProgram, key.c_str());
     if (location >= 0)
     {
         for (int i = 0; i < 16; i++)
         {
-            if (textureSlots[i] == nullptr)
+            if (textureSlots[i] == "")
             {
                 textureSlots[i] = key;
                 glUniform1i(location, i);
             }
-            if (strcmp(textureSlots[i], key) == 0)
+            if (textureSlots[i] == key)
             {
                 glActiveTexture(GL_TEXTURE0 + i);
                 glBindTexture(GL_TEXTURE_2D, texture->Id);
@@ -76,7 +84,7 @@ void Shader::setTexture(const char* key, Texture* texture)
     }
 }
 
-bool Shader::shaderCompile(const char* filename, unsigned int* shader, unsigned int type)
+bool Shader::shaderCompile(std::string filename, unsigned int* shader, unsigned int type)
 {
     char * shaderSource = readFile(filename);
 
@@ -96,11 +104,11 @@ bool Shader::shaderCompile(const char* filename, unsigned int* shader, unsigned 
     return true;
 }
 
-char* Shader::readFile(const char* filename)
+char* Shader::readFile(std::string filename)
 {
     char * shaderSource = 0;
     long length;
-    FILE * f = fopen (filename, "rb");
+    FILE * f = fopen (filename.c_str(), "rb");
 
     if (f)
     {

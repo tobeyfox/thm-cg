@@ -9,12 +9,13 @@ class Shader
     Shader(std::string vertexShaderFile, std::string fragmentShaderFile);
     ~Shader();
     void activate();
-    void setMatrix(const char*, Matrix);
-    void setVector3(const char*, Vector3);
-    void setTexture(const char*, Texture*);
+    void setMatrix(std::string, Matrix);
+    void setVector3(std::string, Vector3);
+    void setTexture(std::string, Texture*);
 
     private:
     unsigned int shaderProgram;
-    bool shaderCompile(const char* filename, unsigned int* shader, unsigned int type);
-    char* readFile(const char* filename);
+    std::string textureSlots[16] = { "" };
+    bool shaderCompile(std::string filename, unsigned int* shader, unsigned int type);
+    char* readFile(std::string filename);
 };

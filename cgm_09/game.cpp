@@ -63,14 +63,14 @@ void gameLoop(double time)
     if (gameKeyState[65]) movement.x -= walkSpeed * time;
     if (gameKeyState[68]) movement.x += walkSpeed * time;
 
-    movement = matrixVector3Multiply(matrixRotateY(-cameraYaw), movement);
-    cameraPosition = vector3Sum(cameraPosition, movement);
+    movement = matrixRotateY(-cameraYaw) * movement;
+    cameraPosition = cameraPosition + movement;
 
     Matrix tMatrix = matrixTranslate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
     Matrix yMatrix = matrixRotateY(cameraYaw);
     Matrix xMatrix = matrixRotateX(cameraPitch);
 
-    graphicsUpdateCamera(matrixMultiply(xMatrix, matrixMultiply(yMatrix, tMatrix)), cameraPosition);
+    graphicsUpdateCamera(xMatrix * yMatrix * tMatrix, cameraPosition);
 
     for (int i = 0; i < scenes.size(); i++)
     {

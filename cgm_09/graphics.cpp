@@ -47,9 +47,9 @@ int graphicsLoadModel(std::string filename)
     return id;
 }
 
-void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation)
+void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation, float scale)
 {
-    models[id]->setTransform(position, rotation);
+    models[id]->setTransform(position, rotation, scale);
 }
 
 void graphicsUpdateModel(int id, std::string flag)
@@ -88,19 +88,19 @@ void graphicsLoop()
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (std::map<int, Model*>::iterator itr = models.begin(), itr_end = models.end(); itr != itr_end; ++itr)
+    for (const auto& [key, model] : models)
     {
-        if (settings.depth && itr->second->skipDepthTesting()) glDisable(GL_DEPTH_TEST);
-        itr->second->render(projectionMatrix, viewMatrix, sunLight, cameraPosition);
-        if (settings.depth && itr->second->skipDepthTesting()) glEnable(GL_DEPTH_TEST);
+        if (settings.depth && model->skipDepthTesting()) glDisable(GL_DEPTH_TEST);
+        model->render(projectionMatrix, viewMatrix, sunLight, cameraPosition);
+        if (settings.depth && model->skipDepthTesting()) glEnable(GL_DEPTH_TEST);
     }
 }
 
 void graphicsTerminate()
 {
-    for (std::map<int, Model*>::iterator itr = models.begin(), itr_end = models.end(); itr != itr_end; ++itr)
+    for (const auto& [key, model] : models)
     {
-        delete itr->second;
+        delete model;
     }
     models.clear();
 }

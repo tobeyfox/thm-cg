@@ -7,12 +7,14 @@ union Vector2 {
     };
     float values[2];
 };
+
 union Vector3 {
     struct {
         float x, y, z;
     };
     float values[3];
 };
+
 union Matrix {
     struct {
         float m11;
@@ -34,6 +36,52 @@ union Matrix {
     };
     float values[16];
 };
+
+inline Matrix operator* (Matrix a, Matrix b)
+{
+    Matrix m;
+
+    //row 1
+    m.m11 = a.m11 * b.m11 + a.m21 * b.m12 + a.m31 * b.m13 + a.m41 * b.m14;
+    m.m21 = a.m11 * b.m21 + a.m21 * b.m22 + a.m31 * b.m23 + a.m41 * b.m24;
+    m.m31 = a.m11 * b.m31 + a.m21 * b.m32 + a.m31 * b.m33 + a.m41 * b.m34;
+    m.m41 = a.m11 * b.m41 + a.m21 * b.m42 + a.m31 * b.m43 + a.m41 * b.m44;
+    
+    //row 2
+    m.m12 = a.m12 * b.m11 + a.m22 * b.m12 + a.m32 * b.m13 + a.m42 * b.m14;
+    m.m22 = a.m12 * b.m21 + a.m22 * b.m22 + a.m32 * b.m23 + a.m42 * b.m24;
+    m.m32 = a.m12 * b.m31 + a.m22 * b.m32 + a.m32 * b.m33 + a.m42 * b.m34;
+    m.m42 = a.m12 * b.m41 + a.m22 * b.m42 + a.m32 * b.m43 + a.m42 * b.m44;
+
+    //row 3
+    m.m13 = a.m13 * b.m11 + a.m23 * b.m12 + a.m33 * b.m13 + a.m43 * b.m14;
+    m.m23 = a.m13 * b.m21 + a.m23 * b.m22 + a.m33 * b.m23 + a.m43 * b.m24;
+    m.m33 = a.m13 * b.m31 + a.m23 * b.m32 + a.m33 * b.m33 + a.m43 * b.m34;
+    m.m43 = a.m13 * b.m41 + a.m23 * b.m42 + a.m33 * b.m43 + a.m43 * b.m44;
+
+    //row 4
+    m.m14 = a.m14 * b.m11 + a.m24 * b.m12 + a.m34 * b.m13 + a.m44 * b.m14;
+    m.m24 = a.m14 * b.m21 + a.m24 * b.m22 + a.m34 * b.m23 + a.m44 * b.m24;
+    m.m34 = a.m14 * b.m31 + a.m24 * b.m32 + a.m34 * b.m33 + a.m44 * b.m34;
+    m.m44 = a.m14 * b.m41 + a.m24 * b.m42 + a.m34 * b.m43 + a.m44 * b.m44;
+
+    return m;
+}
+
+inline Vector3 operator* (Matrix m, Vector3 v)
+{
+    Vector3 result = {
+        m.m11 * v.x + m.m21 * v.y + m.m31 * v.z,
+        m.m12 * v.x + m.m22 * v.y + m.m32 * v.z,
+        m.m13 * v.x + m.m23 * v.y + m.m33 * v.z
+    };
+    return result;
+}
+
+inline Vector3 operator+ (Vector3 a, Vector3 b)
+{
+    return (Vector3){a.x + b.x, a.y + b.y, a.z + b.z};
+}
 
 inline Matrix matrixTranslate(float x, float y, float z)
 {
@@ -75,6 +123,11 @@ inline Matrix matrixRotateZ(float a)
     return m;
 }
 
+inline Matrix matrixRotateXYZ(float x, float y, float z)
+{
+    return matrixRotateX(x) * matrixRotateY(y) * matrixRotateZ(z);
+}
+
 inline Matrix matrixScale(float a)
 {
     Matrix m;
@@ -111,53 +164,12 @@ inline Matrix matrixPerspective(double fov, double aspect, double zNear, double 
     return m;
 }
 
-inline Vector3 matrixVector3Multiply(Matrix m, Vector3 v)
+inline float deg2rad(float deg)
 {
-    Vector3 result = {
-        m.m11 * v.x + m.m21 * v.y + m.m31 * v.z,
-        m.m12 * v.x + m.m22 * v.y + m.m32 * v.z,
-        m.m13 * v.x + m.m23 * v.y + m.m33 * v.z
-    };
-    return result;
+    return deg * M_PI / 180.0f;
 }
 
-inline Matrix matrixMultiply(Matrix a, Matrix b)
+inline Vector3 deg2rad(Vector3 v)
 {
-    Matrix m;
-
-    //row 1
-    m.m11 = a.m11 * b.m11 + a.m21 * b.m12 + a.m31 * b.m13 + a.m41 * b.m14;
-    m.m21 = a.m11 * b.m21 + a.m21 * b.m22 + a.m31 * b.m23 + a.m41 * b.m24;
-    m.m31 = a.m11 * b.m31 + a.m21 * b.m32 + a.m31 * b.m33 + a.m41 * b.m34;
-    m.m41 = a.m11 * b.m41 + a.m21 * b.m42 + a.m31 * b.m43 + a.m41 * b.m44;
-    
-    //row 2
-    m.m12 = a.m12 * b.m11 + a.m22 * b.m12 + a.m32 * b.m13 + a.m42 * b.m14;
-    m.m22 = a.m12 * b.m21 + a.m22 * b.m22 + a.m32 * b.m23 + a.m42 * b.m24;
-    m.m32 = a.m12 * b.m31 + a.m22 * b.m32 + a.m32 * b.m33 + a.m42 * b.m34;
-    m.m42 = a.m12 * b.m41 + a.m22 * b.m42 + a.m32 * b.m43 + a.m42 * b.m44;
-
-    //row 3
-    m.m13 = a.m13 * b.m11 + a.m23 * b.m12 + a.m33 * b.m13 + a.m43 * b.m14;
-    m.m23 = a.m13 * b.m21 + a.m23 * b.m22 + a.m33 * b.m23 + a.m43 * b.m24;
-    m.m33 = a.m13 * b.m31 + a.m23 * b.m32 + a.m33 * b.m33 + a.m43 * b.m34;
-    m.m43 = a.m13 * b.m41 + a.m23 * b.m42 + a.m33 * b.m43 + a.m43 * b.m44;
-
-    //row 4
-    m.m14 = a.m14 * b.m11 + a.m24 * b.m12 + a.m34 * b.m13 + a.m44 * b.m14;
-    m.m24 = a.m14 * b.m21 + a.m24 * b.m22 + a.m34 * b.m23 + a.m44 * b.m24;
-    m.m34 = a.m14 * b.m31 + a.m24 * b.m32 + a.m34 * b.m33 + a.m44 * b.m34;
-    m.m44 = a.m14 * b.m41 + a.m24 * b.m42 + a.m34 * b.m43 + a.m44 * b.m44;
-
-    return m;
-}
-
-inline Matrix matrixRotateXYZ(float x, float y, float z)
-{
-    return matrixMultiply(matrixRotateX(x), matrixMultiply(matrixRotateY(y), matrixRotateZ(z)));
-}
-
-inline Vector3 vector3Sum(Vector3 a, Vector3 b)
-{
-    return (Vector3){a.x + b.x, a.y + b.y, a.z + b.z};
+    return (Vector3){ deg2rad(v.x), deg2rad(v.y), deg2rad(v.z) };
 }

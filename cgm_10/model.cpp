@@ -48,9 +48,9 @@ void Model::render(Matrix projectionMatrix, Matrix viewMatrix, Vector3 sunLight,
     shader->setMatrix("WorldMatrix", matrixTranslate(pos.x, pos.y, pos.z) * matrixRotateXYZ(rotation.x, rotation.y, rotation.z) * matrixScale(scale));
     shader->setVector3("SunLight", sunLight);
     shader->setVector3("CameraPos", cameraPosition);
-    for (std::map<std::string,Texture*>::iterator itr = textures.begin(), itr_end = textures.end(); itr != itr_end; ++itr)
+    for (const auto& [key, texture] : textures)
     {
-        shader->setTexture(itr->first.c_str(), itr->second);
+        shader->setTexture(key, texture);
     }
     mesh->draw();
 }
@@ -77,8 +77,8 @@ Model::~Model()
 {
     delete mesh;
     delete shader;
-    for (std::map<std::string,Texture*>::iterator itr = textures.begin(), itr_end = textures.end(); itr != itr_end; ++itr)
+    for (const auto& [key, texture] : textures)
     {
-        delete itr->second;
+        delete texture;
     }
 }

@@ -45,9 +45,9 @@ int graphicsLoadModel(std::string filename)
     return id;
 }
 
-void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation)
+void graphicsUpdateModel(int id, Vector3 position, Vector3 rotation, float scale)
 {
-    models[id]->setTransform(position, rotation);
+    models[id]->setTransform(position, rotation, scale);
 }
 
 void graphicsUnloadModel(int id)
@@ -73,9 +73,9 @@ bool graphicsStart(Settings props)
     glClearColor(0.2f,0.2f,0.2f,1.0f);
 
     int thmModel = graphicsLoadModel("models/thm.model");
-    graphicsUpdateModel(thmModel, (Vector3){-1,0,0}, (Vector3){});
+    graphicsUpdateModel(thmModel, (Vector3){-1,0,0}, (Vector3){}, 1.0);
     int earthModel = graphicsLoadModel("models/earth.model");
-    graphicsUpdateModel(earthModel, (Vector3){1,0,0}, (Vector3){});
+    graphicsUpdateModel(earthModel, (Vector3){1,0,0}, (Vector3){}, 1.0);
 
     return true;
 }
@@ -86,17 +86,17 @@ void graphicsLoop()
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    for (std::map<int, Model*>::iterator itr = models.begin(), itr_end = models.end(); itr != itr_end; ++itr)
+    for (const auto& [key, model] : models)
     {
-        itr->second->render(projectionMatrix, viewMatrix, sunLight);
+        model->render(projectionMatrix, viewMatrix, sunLight);
     }
 }
 
 void graphicsTerminate()
 {
-    for (std::map<int, Model*>::iterator itr = models.begin(), itr_end = models.end(); itr != itr_end; ++itr)
+    for (const auto& [key, model] : models)
     {
-        delete itr->second;
+        delete model;
     }
     models.clear();
 }

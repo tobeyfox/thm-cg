@@ -1,8 +1,9 @@
 #pragma once
+#include <string>
 
 struct Texture
 {
-    Texture(const char* filename);
+    Texture(std::string filename);
     ~Texture();
     unsigned int Id;
 };

@@ -63,8 +63,8 @@ void gameLoop(double time)
     if (gameKeyState[65]) movement.x -= walkSpeed * time;
     if (gameKeyState[68]) movement.x += walkSpeed * time;
 
-    movement = matrixVector3Multiply(matrixRotateY(-cameraYaw), movement);
-    cameraPosition = vector3Sum(cameraPosition, movement);
+    movement = matrixRotateY(-cameraYaw) * movement;
+    cameraPosition = cameraPosition + movement;
 
     if (cameraPosition.x > 11) cameraPosition.x = 11;
     if (cameraPosition.x < -11) cameraPosition.x = -11;

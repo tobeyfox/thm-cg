@@ -3,12 +3,12 @@ ifeq ($(findstring NT,$(UNAME)),NT)
 	INC = -I../libraries/glfw-3.3.4.bin.WIN64/include -I../libraries/glad/include
 	LIB = -L../libraries/glfw-3.3.4.bin.WIN64/lib-mingw-w64
 	LNK = -l glfw3 -l gdi32 -l opengl32
-	OPT = -Wno-incompatible-pointer-types
+	OPT = 
 else ifeq ($(findstring Darwin,$(UNAME)),Darwin)
 	INC = -I../libraries/glfw-3.3.4.bin.MACOS/include -I../libraries/glad/include
 	LIB = -L../libraries/glfw-3.3.4.bin.MACOS/lib-universal
 	LNK = -l glfw3 -framework Cocoa -framework OpenGL -framework IOKit
-	OPT = -arch arm64 -arch x86_64
+	OPT = -arch arm64 -arch x86_64 -std=gnu++11 -Wno-deprecated
 else ifeq ($(findstring Linux,$(UNAME)),Linux)
 	INC = -I../libraries/glad/include
 	LIB = 

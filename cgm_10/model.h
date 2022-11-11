@@ -16,7 +16,6 @@ class Model
     void render(Matrix projectionMatrix, Matrix viewMatrix, Vector3 sunLight, Vector3 cameraPosition);
     bool skipDepthTesting();
 
-    
     private:
     bool nodepth = false;
     bool fixed = false;

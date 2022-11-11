@@ -9,13 +9,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     char infoLog[512];
 
     unsigned int vertexShader, fragmentShader;
-    if (!shaderCompile(vertexShaderFile.c_str(), &vertexShader, GL_VERTEX_SHADER))
+    if (!shaderCompile(vertexShaderFile, &vertexShader, GL_VERTEX_SHADER))
     {
+        glDeleteShader(vertexShader);
         return;
     }
 
-    if (!shaderCompile(fragmentShaderFile.c_str(), &fragmentShader, GL_FRAGMENT_SHADER))
+    if (!shaderCompile(fragmentShaderFile, &fragmentShader, GL_FRAGMENT_SHADER))
     {
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
         return;
     }
 
@@ -28,9 +31,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "Failed to link shader program" << std::endl << infoLog << std::endl;
+        
+        glDeleteProgram(shaderProgram);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
         return;
     }
 
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
@@ -61,7 +71,7 @@ void Shader::setTexture(std::string key, Texture* texture)
         {
             if (textureSlots[i] == "")
             {
-                textureSlots[i] = key.c_str();
+                textureSlots[i] = key;
                 glUniform1i(location, i);
             }
             if (textureSlots[i] == key)

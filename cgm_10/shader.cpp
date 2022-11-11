@@ -1,7 +1,6 @@
 #include "shader.h"
 #include <iostream>
-#include <cstring>
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
@@ -10,13 +9,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     char infoLog[512];
 
     unsigned int vertexShader, fragmentShader;
-    if (!shaderCompile(vertexShaderFile.c_str(), &vertexShader, GL_VERTEX_SHADER))
+    if (!shaderCompile(vertexShaderFile, &vertexShader, GL_VERTEX_SHADER))
     {
+        glDeleteShader(vertexShader);
         return;
     }
 
-    if (!shaderCompile(fragmentShaderFile.c_str(), &fragmentShader, GL_FRAGMENT_SHADER))
+    if (!shaderCompile(fragmentShaderFile, &fragmentShader, GL_FRAGMENT_SHADER))
     {
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
         return;
     }
 
@@ -29,9 +31,16 @@ Shader::Shader(std::string vertexShaderFile, std::string fragmentShaderFile)
     {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "Failed to link shader program" << std::endl << infoLog << std::endl;
+        
+        glDeleteProgram(shaderProgram);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
         return;
     }
 
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
@@ -77,7 +86,7 @@ void Shader::setTexture(std::string key, Texture* texture)
 
 bool Shader::shaderCompile(std::string filename, unsigned int* shader, unsigned int type)
 {
-    char * shaderSource = readFile(filename.c_str());
+    char * shaderSource = readFile(filename);
 
     int success;
     char infoLog[512];
