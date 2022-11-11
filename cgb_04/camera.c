@@ -45,11 +45,11 @@ void loadCameraViewMatrix()
 
     glLoadIdentity();
     matrix translationMatrix = matrixTranslate(0.0f, 0.0f, -cameraDistance);
-    glMultMatrixf(&translationMatrix);
+    glMultMatrixf((float*)&translationMatrix);
     matrix pitchRotationMatrix = matrixRotateX(deg2rad(-cameraPitch));
-    glMultMatrixf(&pitchRotationMatrix);
+    glMultMatrixf((float*)&pitchRotationMatrix);
     matrix yawRotationMatrix = matrixRotateY(deg2rad(-cameraYaw));
-    glMultMatrixf(&yawRotationMatrix);
+    glMultMatrixf((float*)&yawRotationMatrix);
 }
 
 static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)

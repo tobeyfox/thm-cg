@@ -30,14 +30,14 @@ void loadScene(GLFWwindow* window)
     earthTexture = loadTexture("res/earth8k.jpg");
     satelliteTexture = loadTexture("res/thm2k.png");
 
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, &white);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, (float*)&sunLight);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, (float*)&ambientLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, (float*)&white);
 
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, &noLight);
-    glLightfv(GL_LIGHT2, GL_AMBIENT, &sunLight);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, (float*)&noLight);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, (float*)&sunLight);
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (float*)&noLight);
 }
 
 void renderScene()
@@ -47,7 +47,7 @@ void renderScene()
     loadCameraViewMatrix();
 
     vector4 lightPosition = {0, 0, 50000, 0};
-    glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
+    glLightfv(GL_LIGHT1, GL_POSITION, (float*)&lightPosition);
 
     glDisable(GL_LIGHT2);
     glEnable(GL_LIGHT1);
@@ -77,16 +77,16 @@ static void renderMesh(mesh m, matrix transform, GLuint texture)
     glBindTexture(GL_TEXTURE_2D, texture);
     glEnable(GL_TEXTURE_2D);
     glPushMatrix();
-    glMultMatrixf(&transform);
+    glMultMatrixf((float*)&transform);
     glBegin(GL_QUADS);
     for (int i = 0; i < m.vcount; i++)
     {
-        glNormal3fv(&(m.vertices[i].norm));
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m.vertices[i].color));
+        glNormal3fv((float*)&m.vertices[i].norm);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, (float*)&m.vertices[i].color);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (float*)&m.vertices[i].color);
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0f);
-        glTexCoord2fv(&(m.vertices[i].texcoord));
-        glVertex3fv(&(m.vertices[i].pos));
+        glTexCoord2fv((float*)&m.vertices[i].texcoord);
+        glVertex3fv((float*)&m.vertices[i].pos);
     }
     glEnd();
     glPopMatrix();
@@ -116,8 +116,8 @@ static mesh createCubeMesh(color col)
         vertices[i * 4 + 3] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[3].pos), normr, col, { 0, 1 } };
     }
     return (mesh) {
-        vcount: 24,
-        vertices: vertices
+        .vcount = 24,
+        .vertices = vertices
     };
 }
 
@@ -169,8 +169,8 @@ static mesh createSphereMesh(color col)
     }
     free(vectors);
     return (mesh) {
-        vcount: vcount,
-        vertices: vertices
+        .vcount = vcount,
+        .vertices = vertices
     };
 }
 

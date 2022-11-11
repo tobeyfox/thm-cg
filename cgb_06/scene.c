@@ -27,11 +27,11 @@ void loadScene(GLFWwindow* window)
     redSphere = createSphereMesh(thmRed);
 
     glEnable(GL_LIGHT1);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, &sunLight);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, &ambientLight);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, &white);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, (float*)&sunLight);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, (float*)&ambientLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, (float*)&white);
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &noLight);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (float*)&noLight);
 }
 
 void renderScene()
@@ -41,7 +41,7 @@ void renderScene()
     loadCameraViewMatrix();
 
     vector4 lightPosition = {50000, 20000, 50000, 0};
-    glLightfv(GL_LIGHT1, GL_POSITION, &lightPosition);
+    glLightfv(GL_LIGHT1, GL_POSITION, (float*)&lightPosition);
 
     renderMesh(yellowCube, matrixTranslate(-3,0,0));
     renderMesh(greenCube, matrixTranslate(3,0,0));
@@ -66,15 +66,15 @@ void setViewportSize(GLFWwindow* window)
 static void renderMesh(mesh m, matrix transform)
 {
     glPushMatrix();
-    glMultMatrixf(&transform);
+    glMultMatrixf((float*)&transform);
     glBegin(GL_QUADS);
     for (int i = 0; i < m.vcount; i++)
     {
-        glNormal3fv(&(m.vertices[i].norm));
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &(m.vertices[i].color));
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &(m.vertices[i].color));
+        glNormal3fv((float*)&m.vertices[i].norm);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, (float*)&m.vertices[i].color);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (float*)&m.vertices[i].color);
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 30.0f);
-        glVertex3fv(&(m.vertices[i].pos));
+        glVertex3fv((float*)&m.vertices[i].pos);
     }
     glEnd();
     glPopMatrix();
@@ -103,8 +103,8 @@ static mesh createCubeMesh(color col)
         vertices[i * 4 + 3] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[3].pos), normr, col };
     }
     return (mesh) {
-        vcount: 24,
-        vertices: vertices
+        .vcount = 24,
+        .vertices = vertices
     };
 }
 
@@ -153,7 +153,7 @@ static mesh createSphereMesh(color col)
     }
     free(vectors);
     return (mesh) {
-        vcount: vcount,
-        vertices: vertices
+        .vcount = vcount,
+        .vertices = vertices
     };
 }

@@ -51,12 +51,12 @@ void setViewportSize(GLFWwindow* window)
 static void renderMesh(mesh m, matrix transform)
 {
     glPushMatrix();
-    glMultMatrixf(&transform);
+    glMultMatrixf((float*)&transform);
     glBegin(GL_QUADS);
     for (int i = 0; i < m.vcount; i++)
     {
-        glColor3fv(&(m.vertices[i].color));
-        glVertex3fv(&(m.vertices[i].pos));
+        glColor3fv((float*)&m.vertices[i].color);
+        glVertex3fv((float*)&m.vertices[i].pos);
     }
     glEnd();
     glPopMatrix();
@@ -81,8 +81,8 @@ static mesh createCubeMesh(color col)
         vertices[i * 4 + 3] = (vertex){ matrixVector3Multiply(rotationMatrix, vertices[3].pos), col };
     }
     return (mesh) {
-        vcount: 24,
-        vertices: vertices
+        .vcount = 24,
+        .vertices = vertices
     };
 }
 
@@ -131,7 +131,7 @@ static mesh createSphereMesh(color col)
     }
     free(vectors);
     return (mesh) {
-        vcount: vcount,
-        vertices: vertices
+        .vcount = vcount,
+        .vertices = vertices
     };
 }
