@@ -26,6 +26,13 @@ std::string FileReader::getString()
     return str;
 }
 
+float FileReader::getFloat()
+{
+    std::string p1;
+    lineStream >> p1;
+    return stof(p1);
+}
+
 Vector2 FileReader::getVector2()
 {
     std::string p1, p2;
@@ -38,11 +45,4 @@ Vector3 FileReader::getVector3()
     std::string p1, p2, p3;
     lineStream >> p1 >> p2 >> p3;
     return (Vector3){stof(p1), stof(p2), stof(p3)};
-}
-
-float FileReader::getFloat()
-{
-    std::string p1;
-    lineStream >> p1;
-    return stof(p1);
 }
