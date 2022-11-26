@@ -1,4 +1,12 @@
 # Computergrafik
-### Tobias Reimann, Technische Hochschule Mittelhessen
 
-Dieses Repository enthält den Code zu den Vorlesungen Computergrafik (M.Sc.) und Grundlagen der Computergrafik (B.Sc.)
+Dieses Repository ist ab sofort in einzelne Repositories aufgeteilt...
+
+---
+
+[Grundlagen der Computergrafik (B.Sc.)](https://github.com/tr-thm/grundlagen-der-computergrafik)
+
+[Computergrafik (M.Sc.)](https://github.com/tr-thm/computergrafik)
+
+[Effiziente Algorithmen in der Computergrafik (M.Sc.)](https://github.com/tr-thm/effiziente-algorithmen-in-der-computergrafik)
+
